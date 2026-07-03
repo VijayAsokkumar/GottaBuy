@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GottaBuy — Coming Soon</title>
+<meta name="description" content="GottaBuy tells you what to buy before you run out. Coming soon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --steel-light: #cfd8dc;
+    --steel-mid: #a9b4ba;
+    --steel-dark: #7c878d;
+    --note-yellow: #ffe066;
+    --note-yellow-shadow: #e6c94f;
+    --ink: #2b2b2b;
+    --red: #d64541;
+    --green: #3f8f5f;
+    --paper: #fffdf7;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Work Sans', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(255,255,255,0.35), transparent 55%),
+      linear-gradient(160deg, var(--steel-light) 0%, var(--steel-mid) 55%, var(--steel-dark) 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* subtle brushed-steel texture */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      100deg,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+
+  .note {
+    position: relative;
+    background: var(--note-yellow);
+    width: min(440px, 100%);
+    padding: 44px 36px 38px;
+    box-shadow:
+      0 2px 0 var(--note-yellow-shadow),
+      0 18px 40px -12px rgba(0,0,0,0.45),
+      0 4px 10px -2px rgba(0,0,0,0.25);
+    transform: rotate(-1.4deg);
+    animation: settle 0.7s cubic-bezier(.2,.8,.2,1) both;
+  }
+
+  @keyframes settle {
+    0% { opacity: 0; transform: rotate(-8deg) translateY(-14px) scale(0.97); }
+    100% { opacity: 1; transform: rotate(-1.4deg) translateY(0) scale(1); }
+  }
+
+  /* torn bottom edge */
+  .note::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 14px;
+    background:
+      linear-gradient(135deg, var(--note-yellow) 50%, transparent 50%) 0 0/14px 14px repeat-x,
+      linear-gradient(-135deg, var(--note-yellow) 50%, transparent 50%) 0 100%/14px 14px repeat-x;
+    background-color: transparent;
+  }
+
+  /* tape */
+  .tape {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 110px;
+    height: 34px;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 6px 0 2px;
+  }
+
+  h1.brand {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(40px, 9vw, 56px);
+    line-height: 0.95;
+    margin: 4px 0 6px;
+    color: var(--ink);
+    transform: rotate(-0.6deg);
+  }
+
+  .tagline {
+    font-size: 16px;
+    font-weight: 500;
+    color: #4a4a44;
+    margin: 0 0 26px;
+    line-height: 1.4;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0 0 28px;
+    padding: 0;
+    border-top: 2px dashed rgba(43,43,43,0.25);
+    padding-top: 18px;
+  }
+
+  .list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15.5px;
+    font-weight: 500;
+    padding: 7px 0;
+    color: var(--ink);
+  }
+
+  .box {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    position: relative;
+    background: rgba(255,255,255,0.35);
+  }
+
+  .box.checked::after {
+    content: "";
+    position: absolute;
+    left: 3px; top: -1px;
+    width: 8px; height: 12px;
+    border-right: 3px solid var(--green);
+    border-bottom: 3px solid var(--green);
+    transform: rotate(38deg);
+  }
+
+  .box.checked {
+    animation: tick 0.4s ease forwards;
+    animation-delay: var(--d, 0s);
+    opacity: 0;
+  }
+
+  @keyframes tick {
+    0% { opacity: 0; transform: scale(0.7); }
+    60% { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .form-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  input[type="email"] {
+    flex: 1 1 200px;
+    min-width: 0;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 14.5px;
+    padding: 12px 14px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 2px;
+  }
+
+  input[type="email"]::placeholder { color: #8a8a80; }
+
+  button.notify {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    letter-spacing: 0.01em;
+    padding: 12px 18px;
+    background: var(--ink);
+    color: var(--note-yellow);
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+
+  button.notify:hover { background: var(--red); border-color: var(--red); color: var(--paper); }
+  button.notify:active { transform: scale(0.96); }
+  button.notify:focus-visible, input[type="email"]:focus-visible {
+    outline: 3px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .status {
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 16px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .pin {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff6b6b, #b32020);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    top: 10px;
+    left: 18px;
+    transform: rotate(-8deg);
+  }
+
+  footer {
+    position: fixed;
+    bottom: 14px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(43,43,43,0.55);
+    z-index: 1;
+  }
+
+  @media (max-width: 420px) {
+    .note { padding: 36px 24px 30px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .note, .box.checked { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="note">
+      <div class="tape"></div>
+      <div class="pin"></div>
+      <div class="eyebrow">on the fridge</div>
+      <h1 class="brand">GottaBuy</h1>
+      <p class="tagline">Tells you what to buy, before "we're out" turns into a problem.</p>
+
+      <ul class="list">
+        <li><span class="box checked" style="--d:0.1s"></span> Know what's running low</li>
+        <li><span class="box checked" style="--d:0.3s"></span> Get restock suggestions</li>
+        <li><span class="box" aria-hidden="true"></span> Coming soon</li>
+      </ul>
+
+      <form id="notifyForm">
+        <div class="form-row">
+          <input type="email" id="email" placeholder="you@email.com" required aria-label="Email address">
+          <button type="submit" class="notify">Notify me</button>
+        </div>
+        <div class="status" id="status" role="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <footer>GottaBuy &middot; by AnthroQA</footer>
+
+  <script>
+    const form = document.getElementById('notifyForm');
+    const status = document.getElementById('status');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) return;
+      // Placeholder: no backend wired up yet. Replace with real signup handling later.
+      status.textContent = "Got it — we'll let you know.";
+      form.reset();
+    });
+  </script>
+</body>
+</html>
