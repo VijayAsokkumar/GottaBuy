@@ -12,6 +12,14 @@ class ApiClient {
       headers: {'Content-Type':'application/json'}, body: jsonEncode(receipt.toJson()));
     if (response.statusCode != 201) throw Exception('Purchase save failed: ${response.statusCode}');
   }
+  Future<List<Map<String, dynamic>>> loadPurchases() async {
+    final response = await _http.get(Uri.parse('$baseUrl/purchases'));
+    if (response.statusCode != 200) {
+      throw Exception('Purchase history fetch failed: ${response.statusCode}');
+    }
+    return (jsonDecode(response.body) as List<dynamic>)
+        .map((row) => row as Map<String, dynamic>).toList();
+  }
   Future<List<InventoryItem>> loadInventory() async {
     final response = await _http.get(Uri.parse('$baseUrl/inventory'));
     if (response.statusCode != 200) throw Exception('Inventory fetch failed: ${response.statusCode}');

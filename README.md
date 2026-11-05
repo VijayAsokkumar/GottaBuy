@@ -1,10 +1,12 @@
-# GottaBuy – 20-source-file starter
+# GottaBuy – Flutter/Dart multi-feature starter (36 Dart files)
 
 An intentional **starter** (not a finished mobile product) for ODIN/code-evaluation tasks. Flutter/Dart mobile UI; FastAPI/Python backend. No Supabase account, paid service, barcode device or OCR required to demonstrate the base path. See [TASKS.md](TASKS.md) for eight independent agent tasks.
 
 ## What works now
 - `GET /health`, `POST /purchases`, `GET /purchases`, `GET /inventory`, `GET /prices/{product}`, and `GET /recommendations/{product}`.
-- Flutter app home, receipt demo submission, inventory and receipt-derived historical price listings.
+- Flutter app home, receipt demo submission, inventory, purchase history and receipt-derived historical price listings.
+- A runnable in-memory shopping-list demo, a restock calculation demo, and screen shells for barcode lookup and receipt review.
+- 2 Flutter unit test files for shopping-list and restock services.
 - Unit tests for current business behaviour. **No user auth, persistent DB, live prices, camera/OCR, or consumption tracking yet.**
 - `/receipts/parse` explicitly returns 501; camera/OCR is a Dart stub. Data is lost on API restart.
 
@@ -34,8 +36,14 @@ curl http://localhost:8000/inventory
 curl http://localhost:8000/prices/Milk
 ```
 
+## Run Flutter unit tests
+After installing Flutter and running `flutter pub get` in `mobile/`:
+```sh
+flutter test
+```
+
 ## Run mobile app
-Install the Flutter SDK (not bundled). This starter intentionally contains Dart/lib and `pubspec.yaml` only, to keep source file count fixed at 20. **Generate the missing platform runner files first:**
+Install the Flutter SDK (not bundled). This starter contains Dart source files and `pubspec.yaml`, but not generated native runner files. **Generate the missing platform runner files first:**
 ```sh
 cd mobile
 flutter create --platforms=android,ios .
@@ -46,9 +54,15 @@ For iOS simulator, use `--dart-define=API_BASE_URL=http://localhost:8000`. Physi
 
 ## Repository guide
 - Backend: `backend/app/main.py`, `models.py`, `store.py`, `services/*`
-- Mobile: `mobile/lib/main.dart`, `app.dart`, `models/*`, `services/*`, `screens/*`
+- Mobile: `mobile/lib/main.dart`, `app.dart`, `models/*`, `services/*`, `screens/*`, `widgets/*`, `utils/*`
+- Flutter tests: `mobile/test/*`
 - Tests: `backend/tests/*`
-- Source code file count: **20** (`12 .dart + 8 .py`). The repo also includes configs, docs and Dockerfile.
+- Source code file count: **44** (`36 .dart including 2 Flutter tests + 8 .py`). The repo also includes configs, docs and Dockerfile.
+
+## Flutter feature status
+- **Works as a local demo:** shopping-list add/check (in-memory), restock due-date calculation, purchase-history API fetch, receipt demo submission, inventory and historical prices.
+- **Stubs for agent tasks:** real barcode lookup, image OCR, Supabase authentication, cloud shopping-list sync, notifications, persistent purchase history model mapping, and editable receipt review.
+- **Caution:** the receipt review screen shows extracted lines and allows confirmation, but extraction and editing are still TODOs.
 
 ## ODIN use
 Commit this baseline to your own repository before assigning a task. Share a pinned `/tree/<commit-sha>` URL to the baseline, **not** the URL of a later fix. Do not imply this starter qualifies for enterprise (>200 files); this is a small personal-scale starter. For an Understand/Assess slot, assign TILE-08; for a Modify slot, use the other tiles. Review task metadata for domain/action/codebase type compatibility.
